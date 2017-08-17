@@ -10,11 +10,13 @@
   "author": "Vishwas B Anand",
   "license": "ISC",
   "dependencies": {
+    "asyncawait": "^1.0.6",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.2",
     "mongoose": "^4.11.7",
     "morgan": "^1.8.2",
+    "node-babel": "^0.1.2",
     "nodemon": "^1.11.0"
   }
 }

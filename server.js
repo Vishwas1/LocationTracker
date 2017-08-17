@@ -6,19 +6,34 @@ var express = require('express'),
  morgan = require('morgan'),
  mongoose =require('mongoose'),
  mongoClient = require('mongodb').MongoClient,
- jwt = require('jsonwebtoken');
+ jwt = require('jsonwebtoken'),
+ //await = require('asyncawait/await'),
+ //async = require('asyncawait/async')
+ dbConn = require('./dbConn');
+
 
 
 
 
 //connecting to db
 mongoose.Promise = require('bluebird');
-console.log('server : Before connecting database');
-mongoClient.connect(config.database, function(err, db) {
-  if(!err) console.log('server : Database connected');
+console.log('server : Before calling  DbConnection method');
+dbConn.connection().then(function(res){
+	console.log('server : Connected to Db');
+	global.dbConnection = true;
+	global.dbQueryObj = res;
+}).catch(function(err){
+	console.log('server :Error Connected to Db res ='+err);
+	global.dbConnection = false;
 });
 
-console.log('server : After connecting database');
+
+if(dbConn.connection){
+	console.log('server : Database is connected');
+}else{
+	console.log('server : Database is not connected');
+}
+
 
 
 
@@ -51,6 +66,8 @@ app.use('/user', require('./app/user'));
 //listen and start the server
 app.listen(port);
 console.log('Server is up and running at port:'+port);
+
+
 
 
 

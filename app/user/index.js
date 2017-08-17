@@ -5,5 +5,6 @@ var express = require('express'),
 
 
 router.post('/create',controller.create); //routes for creating a user
+router.get('/users',controller.getusers); //routes for creating a user
 
 module.exports =router;
