@@ -74,7 +74,7 @@ button {
 var gblUsername ="";
   $(document).ready(function(){
     $(".signupbtn").click(function(){
-        debugger;
+        //debugger;
         var username = $("input")[0].value;
         var password = $("input")[1].value;
         gblUsername = username;
@@ -87,7 +87,7 @@ var gblUsername ="";
         });
 
         request.done(function(result) {
-          debugger;
+          //debugger;
           if(typeof result != 'undefined'){
             if(result.status !== 'Error'){
               alert('User successfully created!');
@@ -101,7 +101,7 @@ var gblUsername ="";
         });
 
         request.fail(function(jqXHR, textStatus) {
-          debugger;
+          //debugger;
           alert('Fail');
         });
     });

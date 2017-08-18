@@ -66,14 +66,14 @@
     var token = window.localStorage.getItem(username);
     var URL = "" ;
   $(document).ready(function(){
-    debugger;
+    //debugger;
     UpdateTable();
     google.maps.event.addDomListener(window,'load',initize);
     function initize(){
-      debugger;
+      //debugger;
       var autocomplete = new google.maps.places.Autocomplete($("#txtautocomp")[0]);
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        debugger;      
+        //debugger;      
         var places = autocomplete.getPlace();
         var formattedAdd = places.formatted_address;
         var longitude = places.geometry.location.lat();
@@ -97,13 +97,13 @@
           });
 
           request.done(function(result) {
-            debugger;
+            //debugger;
             UpdateTable();
             $("#txtautocomp").val("");
           });
 
           request.fail(function(jqXHR, textStatus) {
-            debugger;
+            //debugger;
             alert('Fail');
           });
         });
@@ -122,7 +122,7 @@
         });
 
      request.done(function(result) {
-      debugger;
+      //debugger;
       if(typeof result !== 'undefined')
       {
         if(result.length >0){
@@ -149,7 +149,7 @@
       
       });
         request.fail(function(jqXHR, textStatus) {
-          debugger;
+          //debugger;
           alert('Fail');
         });
 
