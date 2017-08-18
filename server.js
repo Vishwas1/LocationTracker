@@ -10,7 +10,17 @@ var express = require('express'),
  dbConn = require('./dbConn');
 
 
-//comment added
+//Navigation
+
+var nav = [	{
+				Link : '/login',
+				Text : 'Login'
+			},
+			{
+				Link : '/signup',
+				Text : 'Signup'
+		 	}
+		 ];
 
 //connecting to db
 mongoose.Promise = require('bluebird');
@@ -37,12 +47,20 @@ app.use(bodyparser.json());
 //morgan to log requests to the console
 app.use(morgan('dev'));
 
+// going to be used by express first
+app.use(express.static('public')); 
+
+//View Engine
+app.set('views','./app/views');
+app.set('view engine','ejs');
+
 //Routes configuration ...
-/*app.get('/',function(req,res){
-	res.send('Hello! Server is running at localhost:'+ port);
-	console.log('Server is up and running at port:'+port);
-});*/
-app.use('/user', require('./app/user'));
+app.get('/',function(req,res){res.render('index',{title:'Home Page', nav : nav , appName: config.appName});});
+app.get('/login',function(req,res){res.render('login',{title:'Login Page', nav : nav, appName:  config.appName });});
+app.get('/signup',function(req,res){res.render('signup',{title:'Signup Page', nav : nav, appName:  config.appName });});
+app.get('/home',function(req,res){res.render('home',{title:'User Page', nav : nav , username: req.query.username, appName:  config.appName });});
+app.use('/api', require('./app/api'));
+
 
 
 //listen and start the server
