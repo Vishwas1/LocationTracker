@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="generator" content="Bootply" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="css/styles.css" rel="stylesheet">
+
+
+  </head>
+  <body>
+<header class="navbar navbar-bright navbar-fixed-top" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">Home</a>
+    </div>
+    <nav class="collapse navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+      <% var text =''; %>
+      <% var link = ''; %>
+        <%for(var i=0; i < nav.length ; i++){ %>
+              
+            <%  text = nav[i].Text; %>
+            <%  link = nav[i].Link ; %>    
+            <% if(i==0) { %>
+              <%  text = 'Logout'; %>
+              <%  link = '/login' ; %>  
+            <% } %>
+            <li><a href="<%=link%>"><%=text%></a></li>
+        <%}%>
+      </ul>
+      <ul class="nav navbar-right navbar-nav">
+        <li class="dropdown" style="padding-top: 5px;font-family: cursive;color: darkgray;">
+        <h4><%= appName %></h4>  
+          <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-search"></i></a> -->
+          <ul class="dropdown-menu" style="padding:12px;">
+            <!-- <form class="form-inline">
+              <button type="submit" class="btn btn-default pull-right"><i class="glyphicon glyphicon-search"></i></button><input type="text" class="form-control pull-left" placeholder="Search">
+            </form> -->
+
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<script>  
+    var username = window.location.search.split('=')[1];
+    var token = window.localStorage.getItem(username);
+    var URL = "" ;
+  $(document).ready(function(){
+    debugger;
+    UpdateTable();
+    google.maps.event.addDomListener(window,'load',initize);
+    function initize(){
+      debugger;
+      var autocomplete = new google.maps.places.Autocomplete($("#txtautocomp")[0]);
+      google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        debugger;      
+        var places = autocomplete.getPlace();
+        var formattedAdd = places.formatted_address;
+        var longitude = places.geometry.location.lat();
+        var latitude = places.geometry.location.lng();
+        
+          //Call api to store the location...
+          URL = window.origin + "/api/loc";
+          var DATA = {
+            "username" : username,
+            "address" : formattedAdd,
+            "longitude" : longitude,
+            "latitude" : latitude
+          };
+
+          var request = $.ajax({
+            url: URL,
+            type: "POST",
+            data : DATA,
+            dataType: "json",
+            beforeSend: function (xhr) { xhr.setRequestHeader ("Authorization", "Bearer " + token); } 
+          });
+
+          request.done(function(result) {
+            debugger;
+            UpdateTable();
+            $("#txtautocomp").val("");
+          });
+
+          request.fail(function(jqXHR, textStatus) {
+            debugger;
+            alert('Fail');
+          });
+        });
+    }
+  });
+
+  function UpdateTable(){
+
+    URL = window.origin + "/api/locList?username=" + username;
+    var request = $.ajax({
+          url: URL,
+          type: "GET",
+          beforeSend: function (xhr) {
+                      xhr.setRequestHeader ("Authorization", "Bearer " + token);
+                      }
+        });
+
+     request.done(function(result) {
+      debugger;
+      if(typeof result !== 'undefined')
+      {
+        if(result.length >0){
+
+          var html = "<table class='table table-bordered table-hover'>";
+          html += "<tr>";
+          html += "<th>Address</th>";
+          html += "<th>Longitude</th>";
+          html += "<th>Latitude</th>";
+          html += "</tr>";
+          for(var i =0 ;i< result.length ;i++){
+            html += "<tr>";
+            html += "<td>"+ result[i].address+"</td>";
+            html += "<td>"+ result[i].longitude+"</td>";
+            html += "<td>"+ result[i].latitude+"</td>";
+            html += "</tr>";
+          }
+          html += "</table>";
+          $("#table").html(html);
+        }else{
+          $("#table").html('No location list found :( Search to add into list.');
+        }
+      }
+      
+      });
+        request.fail(function(jqXHR, textStatus) {
+          debugger;
+          alert('Fail');
+        });
+
+  }
+
+</script>
+<div class="container">
+  
+  <div class="row">
+    
+    <div class="col-md-12"> 
+      
+      <div class="panel">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-md-10">
+              <h2>Welcome <%= username %>!</h2>
+            </div>
+            <div class="col-sm-1"></div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-1">
+              
+            </div>
+            <div class="col-sm-10">
+              <input type="text" id="txtautocomp" placeholder="Search Location" style="width: 100%;height: 40px;padding-left: 5px;">
+            </div>
+            <div class="col-sm-1">
+              
+            </div>
+          </div>
+          <hr>
+          <div class="row">   
+            <br>
+            <div class="col-md-12 col-sm-12">
+              <div class="row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-10" id="table">
+                  
+                </div>
+                <div class="col-xs-1"></div>
+              </div>
+              <br><br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/col-12-->
+  </div>
+</div>
+                                                
+                                                                                
+<hr>
+
+<hr>
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <ul class="list-inline">
+          <li><i class="icon-facebook icon-2x"></i></li>
+          <li><i class="icon-twitter icon-2x"></i></li>
+          <li><i class="icon-google-plus icon-2x"></i></li>
+          <li><i class="icon-pinterest icon-2x"></i></li>
+        </ul>
+        
+      </div>
+      <div class="col-sm-6">
+          <p class="pull-right">Built with <i class="icon-heart-empty"></i> by <a href="#">Vishwas :)</a></p>      
+      </div>
+    </div>
+  </div>
+</footer>
+  <!-- script references -->
+    
+    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
