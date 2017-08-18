@@ -138,58 +138,6 @@ var userController = {
 		}
 		console.log('authController : authenticate method ends');
 	}
-
-	/*,
-	getusers : function(req,res){
-		console.log('userController : getusers method starts');
-		if(global.dbConnection)
-		{
-			console.log('userController : Database connection success');
-			if(typeof global.dbQueryObj != 'Undefined')
-			{
-				var token = req.body.token || req.query.token || req.headers['x-access-token'];
-				console.log('userController : Token = '+ token);
-				//check if token is valid
-				if(token)
-				{
-					services.validateToken(token)
-					.then(function(decoded){
-						console.log('userController : Promise1 resolved : Token validaed successfully decoded = '+ decoded);
-						var OueryObj = global.dbQueryObj.collection("User1");
-						return new Promise(function(resolve,reject){
-							OueryObj.find({}, {_id :false}).toArray(function(err, users) {
-								if(err) throw err;
-								else resolve(users);
-							});
-						});
-					})
-					.then(function(users){
-						console.log('userController : Promise2 resolved = users.length '+ users);
-						res.json(users);
-					})
-					.catch(function(err){
-						console.log('userController : Error = '+ err);
-						res.json({status :'Error', message : 'Error in validating token'});
-					})
-				}
-				else
-				{	
-					res.status(403).json({status :'Error', message : 'No token provided'});
-				}
-			}
-			else
-			{
-				console.log('userController : global.db is undefined');		
-			}
-		}
-		else
-		{
-			console.log('userController : Database connection failed');
-		}
-		console.log('userController : getusers method ends');
-	},
-	*/
-
 }
 
 module.exports = userController;

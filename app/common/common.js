@@ -11,17 +11,7 @@ var services = {
 			expiresIn: 60*60*24
 		});
 	},
-
-	getUsers : function(){
-		var OueryObj = global.dbQueryObj.collection("User1");
-		return new Promise(function(resolve,reject){
-			OueryObj.find({}, {_id :false}).toArray(function(err, users) {
-				if(err) throw err;
-				else resolve(users);
-			});
-		});
-	},
-
+	
 	checkExists : function(query,model){
 		var OueryObj = global.dbQueryObj.collection(model);
 		return new Promise(function(resolve,reject){

@@ -17,7 +17,6 @@
     "jsonwebtoken": "^7.4.2",
     "mongoose": "^4.11.7",
     "morgan": "^1.8.2",
-    "node-babel": "^0.1.2",
     "nodemon": "^1.11.0"
   }
 }
